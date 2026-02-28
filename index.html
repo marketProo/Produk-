@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>MarketPro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h2>MarketPro</h2>
+  <div>
+    <button onclick="showAdmin()">Admin</button>
+    <button onclick="showCart()">Keranjang 🛒</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <div id="adminPanel">
+    <h3>Tambah Produk</h3>
+    <input type="text" id="nama" placeholder="Nama Produk">
+    <input type="number" id="harga" placeholder="Harga">
+    <button onclick="tambahProduk()">Simpan Produk</button>
+  </div>
+
+  <h3>Produk</h3>
+  <div id="produkList"></div>
+
+  <h3>Keranjang</h3>
+  <div id="cartList"></div>
+  <button class="green" onclick="checkoutWA()">Checkout WhatsApp</button>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
