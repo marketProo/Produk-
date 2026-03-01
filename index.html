@@ -1,39 +1,604 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
+<html lang="id" class="h-full">
+ <head>
   <meta charset="UTF-8">
-  <title>MarketPro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header>
-  <h2>MarketPro</h2>
-  <div>
-    <button onclick="showAdmin()">Admin</button>
-    <button onclick="showCart()">Keranjang 🛒</button>
+  <title>MarketPro - Marketplace Premium Indonesia | 50+ Produk Original Terjamin</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Outfit', sans-serif; }
+    html, body { height: 100%; width: 100%; }
+    
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.5), inset 0 0 20px rgba(34, 197, 94, 0.1); } 50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.8), inset 0 0 30px rgba(34, 197, 94, 0.2); } }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
+    @keyframes shimmer { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    @keyframes glow-border { 0%, 100% { border-color: rgba(59, 130, 246, 0.4); box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); } 50% { border-color: rgba(59, 130, 246, 0.8); box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); } }
+    @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes gradient-flow { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    
+    .animate-slide-down { animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    .animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    .animate-fade { animation: fadeIn 0.5s ease-out forwards; }
+    .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .animate-shimmer { animation: shimmer 2s ease-in-out infinite; }
+    .glow-border { animation: glow-border 2s ease-in-out infinite; }
+    .spin-slow { animation: spin-slow 20s linear infinite; }
+    .bounce-slow { animation: bounce 2s ease-in-out infinite; }
+    .gradient-flow { animation: gradient-flow 3s ease infinite; background-size: 200% 200%; }
+    
+    body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); min-height: 100vh; }
+    
+    .gradient-text { background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+    .gradient-btn { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%); background-size: 200% 200%; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3); }
+    .gradient-btn:hover { background-position: 100% 0; transform: translateY(-2px); box-shadow: 0 15px 40px rgba(59, 130, 246, 0.5); }
+    .gradient-btn:active { transform: translateY(0); }
+    
+    .card-hover { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .card-hover:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 30px 60px -12px rgba(59, 130, 246, 0.3); }
+    
+    .product-card { position: relative; overflow: hidden; }
+    .product-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+    .product-card:hover::before { opacity: 1; }
+    
+    .discount-badge { position: absolute; top: 12px; right: 12px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 900; color: white; box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4); transform: rotate(-2deg); z-index: 10; }
+    .discount-badge::after { content: ''; position: absolute; inset: 0; background: inherit; border-radius: 8px; animation: pulse-glow 2s infinite; opacity: 0.5; }
+    
+    .navbar-glass { backdrop-filter: blur(12px); background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid rgba(59, 130, 246, 0.2); }
+    .glass-card { backdrop-filter: blur(15px); background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(30, 41, 59, 0.3) 100%); border: 1px solid rgba(59, 130, 246, 0.2); }
+    
+    .loading-spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid #3b82f6; border-radius: 50%; width: 32px; height: 32px; animation: spin-slow 1.2s linear infinite; }
+    .loading-spinner-sm { border: 2px solid rgba(255,255,255,0.1); border-top: 2px solid #10b981; border-radius: 50%; width: 16px; height: 16px; animation: spin-slow 0.8s linear infinite; display: inline-block; }
+    
+    .toast { animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    
+    .price-tag { font-family: 'Space Grotesk', monospace; letter-spacing: 0.05em; }
+    
+    .category-filter-btn { position: relative; overflow: hidden; }
+    .category-filter-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 2s infinite; }
+    
+    .hero-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #064e3b 50%, #1e293b 75%, #0f172a 100%); background-size: 400% 400%; animation: gradient-flow 8s ease infinite; }
+    
+    .scroll-smooth { scroll-behavior: smooth; }
+    
+    .stat-card { backdrop-filter: blur(20px); background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border: 2px solid rgba(59, 130, 246, 0.3); }
+    .stat-card:hover { border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 0 30px rgba(59, 130, 246, 0.2); }
+    
+    .cta-section { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%); position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%); pointer-events: none; }
+    .cta-section::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 80% 50%, rgba(255,255,255,0.05) 0%, transparent 50%); pointer-events: none; }
+    
+    .trust-badge { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; font-size: 13px; font-weight: 600; color: #10b981; }
+    
+    .feature-icon { font-size: 48px; display: inline-block; transition: all 0.3s; }
+    .feature-icon-container:hover .feature-icon { animation: bounce 0.6s; transform: scale(1.1); }
+    
+    input, textarea { background: rgba(15, 23, 42, 0.7) !important; border: 1px solid rgba(59, 130, 246, 0.3) !important; color: white !important; }
+    input:focus, textarea:focus { border-color: rgba(59, 130, 246, 0.6) !important; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2) !important; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full w-full overflow-auto scroll-smooth bg-slate-950">
+  <div class="min-h-full w-full flex flex-col"><!-- ==================== NAVBAR PREMIUM ====================  -->
+   <nav class="sticky top-0 z-50 navbar-glass backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4"><!-- LOGO & BRANDING -->
+     <div class="flex items-center gap-3 flex-shrink-0 group">
+      <div class="relative animate-slide-down">
+       <div class="w-14 h-14 bg-gradient-btn rounded-2xl flex items-center justify-center text-3xl font-black shadow-xl transform group-hover:scale-110 transition">
+        🛍️
+       </div>
+       <div class="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-xs font-black animate-pulse pulse-glow">
+        ✓
+       </div>
+      </div>
+      <div class="hidden sm:block">
+       <h1 id="storeName" class="text-2xl md:text-3xl font-black gradient-text">MarketPro</h1>
+       <p id="storeMotto" class="text-xs text-slate-400 font-bold">🟢 Terpercaya Indonesia</p>
+      </div>
+     </div><!-- CENTER INFO -->
+     <div class="hidden lg:flex items-center gap-4">
+      <div class="text-center px-5 py-3 stat-card rounded-xl transform hover:scale-110 transition">
+       <p class="text-lg font-black text-yellow-400 price-tag" id="totalProductCount">50+</p>
+       <p class="text-xs text-slate-400 font-bold">Produk</p>
+      </div>
+      <div class="text-center px-5 py-3 stat-card rounded-xl transform hover:scale-110 transition">
+       <p class="text-lg font-black text-green-400 price-tag" id="totalOrders">12.5K+</p>
+       <p class="text-xs text-slate-400 font-bold">Terjual</p>
+      </div>
+      <div class="text-center px-5 py-3 stat-card rounded-xl transform hover:scale-110 transition">
+       <p class="text-lg font-black text-blue-400">4.9 ⭐</p>
+       <p class="text-xs text-slate-400 font-bold">Rating</p>
+      </div>
+     </div><!-- RIGHT ACTIONS -->
+     <div class="flex items-center gap-2 sm:gap-3"><button onclick="toggleDebug()" class="hidden md:inline px-4 py-2 text-xs bg-slate-700/50 hover:bg-slate-600 border border-slate-600 rounded-lg transition font-bold hover:scale-105">🔧</button> <a id="waLink" href="https://wa.me/" target="_blank" rel="noopener noreferrer" class="px-5 py-2 gradient-btn text-white font-black rounded-lg transition shadow-lg text-sm transform hover:scale-105 active:scale-95">💬</a> <button id="downloadBtn" class="px-5 py-2 gradient-btn text-white font-black rounded-lg transition shadow-lg text-sm transform hover:scale-105 active:scale-95">📥</button>
+     </div>
+    </div>
+   </nav><!-- ==================== HERO SECTION ULTIMATE ====================  -->
+   <section class="relative overflow-hidden py-24 md:py-48 hero-gradient">
+    <div class="absolute inset-0 opacity-40 pointer-events-none">
+     <div class="absolute top-10 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-3xl opacity-30"></div>
+     <div class="absolute bottom-10 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-float" style="animation-delay: 2s;"></div>
+     <div class="absolute top-1/2 left-1/2 w-96 h-96 bg-pink-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-float"></div>
+    </div>
+    <div class="relative max-w-6xl mx-auto px-4 text-center"><!-- PROMO BADGES -->
+     <div class="flex flex-wrap gap-3 justify-center mb-8 animate-slide-down" style="animation-delay: 0.1s;">
+      <div class="inline-block px-4 py-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/50 rounded-full backdrop-blur-sm glow-border">
+       <p class="text-sm font-black text-red-400">🔥 MEGA SALE - Diskon 10-25%</p>
+      </div>
+      <div class="inline-block px-4 py-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/50 rounded-full backdrop-blur-sm">
+       <p class="text-sm font-black text-green-400">✈️ Gratis Ongkir Se-Indonesia</p>
+      </div>
+     </div><!-- HEADLINE -->
+     <h2 class="text-6xl md:text-8xl lg:text-9xl font-black mb-6 gradient-text leading-tight animate-slide-down" style="animation-delay: 0.2s;">Marketplace<br>
+      Premium</h2>
+     <p class="text-lg md:text-2xl text-slate-200 mb-12 max-w-4xl mx-auto font-semibold leading-relaxed animate-slide-up" style="animation-delay: 0.3s;">50+ Produk Original Terjamin | Cicilan 0% | Garansi Resmi | Rating 4.9 ⭐</p><!-- STATS GRID INTERACTIVE -->
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16 max-w-5xl mx-auto">
+      <div class="px-6 py-6 glass-card border-2 glow-border rounded-2xl transform hover:scale-110 transition feature-icon-container animate-slide-up" style="animation-delay: 0.4s;">
+       <p class="text-3xl md:text-4xl font-black text-green-400 price-tag">50+</p>
+       <p class="text-sm text-slate-400 mt-2 font-bold">Produk Premium</p>
+      </div>
+      <div class="px-6 py-6 glass-card border-2 glow-border rounded-2xl transform hover:scale-110 transition feature-icon-container animate-slide-up" style="animation-delay: 0.5s;">
+       <p class="text-3xl md:text-4xl font-black text-yellow-400 price-tag">12.5K+</p>
+       <p class="text-sm text-slate-400 mt-2 font-bold">Terjual Hari Ini</p>
+      </div>
+      <div class="px-6 py-6 glass-card border-2 glow-border rounded-2xl transform hover:scale-110 transition feature-icon-container animate-slide-up" style="animation-delay: 0.6s;">
+       <p class="text-3xl md:text-4xl font-black text-blue-400">4.9 ⭐</p>
+       <p class="text-sm text-slate-400 mt-2 font-bold">Rating Toko</p>
+      </div>
+      <div class="px-6 py-6 glass-card border-2 glow-border rounded-2xl transform hover:scale-110 transition feature-icon-container animate-slide-up" style="animation-delay: 0.7s;">
+       <p class="text-3xl md:text-4xl font-black text-purple-400">100%</p>
+       <p class="text-sm text-slate-400 mt-2 font-bold">Terjamin Asli</p>
+      </div>
+     </div><!-- CTA BUTTONS PREMIUM -->
+     <div class="flex gap-4 justify-center flex-wrap mb-10 animate-slide-up" style="animation-delay: 0.8s;"><a href="#products" class="group inline-flex items-center gap-3 px-10 py-5 gradient-btn text-white font-black text-lg rounded-xl shadow-2xl transform hover:scale-110 active:scale-95 transition"> <span class="text-3xl group-hover:animate-float">📦</span> <span class="hidden sm:inline">Lihat Katalog</span> <span class="sm:hidden">Katalog</span> </a> <a id="heroWaBtn" href="#" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-black text-lg rounded-xl shadow-2xl transform hover:scale-110 active:scale-95 transition"> <span class="text-3xl group-hover:animate-float">💬</span> <span class="hidden sm:inline">Order Sekarang</span> <span class="sm:hidden">Order</span> </a>
+     </div><!-- TRUST BADGES ROW -->
+     <div class="flex gap-3 justify-center flex-wrap animate-fade" style="animation-delay: 1s;">
+      <div class="trust-badge"><span class="text-lg">✓</span> Garansi Resmi
+      </div>
+      <div class="trust-badge"><span class="text-lg">✓</span> Cicilan 0%
+      </div>
+      <div class="trust-badge"><span class="text-lg">✓</span> Gratis Ongkir
+      </div>
+      <div class="trust-badge"><span class="text-lg">✓</span> Asuransi Gratis
+      </div>
+     </div>
+    </div><!-- FLOATING BACKGROUND EFFECTS -->
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-950 to-transparent pointer-events-none"></div>
+   </section><!-- ==================== KATALOG PRODUK SECTION ====================  -->
+   <section id="products" class="py-24 md:py-32 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <div class="max-w-7xl mx-auto px-4"><!-- SECTION HEADER -->
+     <div class="mb-16 text-center animate-slide-up">
+      <h3 class="text-5xl md:text-7xl font-black mb-6 gradient-text">📦 Katalog 50+ Produk</h3>
+      <p class="text-slate-400 text-xl font-semibold max-w-2xl mx-auto">Pilih dari berbagai kategori dengan diskon hingga 25% + Gratis Ongkir</p>
+     </div><!-- FILTER BUTTONS PREMIUM -->
+     <div class="flex gap-3 mb-16 overflow-x-auto pb-4 justify-center flex-wrap"><button onclick="filterCategory('Semua')" class="px-7 py-3 gradient-btn text-white font-black rounded-xl hover:shadow-2xl transition flex-shrink-0 transform hover:scale-105 active:scale-95 shadow-lg"> 📦 Semua </button> <button onclick="filterCategory('Kendaraan')" class="px-7 py-3 glass-card border border-slate-600 text-white font-bold rounded-xl hover:border-blue-500 transition flex-shrink-0 category-filter-btn">🚗 Kendaraan</button> <button onclick="filterCategory('Elektronik')" class="px-7 py-3 glass-card border border-slate-600 text-white font-bold rounded-xl hover:border-blue-500 transition flex-shrink-0 category-filter-btn">📱 Elektronik</button> <button onclick="filterCategory('Fashion')" class="px-7 py-3 glass-card border border-slate-600 text-white font-bold rounded-xl hover:border-blue-500 transition flex-shrink-0 category-filter-btn">👗 Fashion</button> <button onclick="filterCategory('Logam Mulia')" class="px-7 py-3 glass-card border border-slate-600 text-white font-bold rounded-xl hover:border-blue-500 transition flex-shrink-0 category-filter-btn">💎 Logam Mulia</button> <button onclick="filterCategory('Rumah Tangga')" class="px-7 py-3 glass-card border border-slate-600 text-white font-bold rounded-xl hover:border-blue-500 transition flex-shrink-0 category-filter-btn">🏠 Rumah Tangga</button> <button onclick="filterCategory('Olahraga')" class="px-7 py-3 glass-card border border-slate-600 text-white font-bold rounded-xl hover:border-blue-500 transition flex-shrink-0 category-filter-btn">⚽ Olahraga</button>
+     </div><!-- PRODUCTS GRID PREMIUM -->
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="productsGrid">
+      <div class="col-span-full flex items-center justify-center py-20">
+       <div class="text-center">
+        <div class="loading-spinner mx-auto mb-6"></div>
+        <p class="text-slate-400 text-lg font-semibold">⏳ Mempersiapkan katalog produk premium...</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- ==================== FEATURES SECTION PREMIUM ====================  -->
+   <section class="py-20 md:py-28 bg-slate-900 border-t border-slate-800/50">
+    <div class="max-w-6xl mx-auto px-4">
+     <h3 class="text-4xl md:text-5xl font-black mb-16 text-center gradient-text">🎁 Keunggulan MarketPro</h3>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center glass-card p-8 rounded-2xl card-hover border border-slate-700/50 group feature-icon-container">
+       <p class="feature-icon">🚚</p>
+       <h4 class="text-2xl font-black mb-3 text-white group-hover:gradient-text transition">Gratis Ongkir</h4>
+       <p class="text-slate-400 text-base font-semibold leading-relaxed">Pengiriman gratis ke seluruh nusantara tanpa minimum pembelian</p>
+      </div>
+      <div class="text-center glass-card p-8 rounded-2xl card-hover border border-slate-700/50 group feature-icon-container">
+       <p class="feature-icon">💳</p>
+       <h4 class="text-2xl font-black mb-3 text-white group-hover:gradient-text transition">Cicilan 0%</h4>
+       <p class="text-slate-400 text-base font-semibold leading-relaxed">Cicilan tanpa bunga hingga 12 bulan tanpa kartu kredit</p>
+      </div>
+      <div class="text-center glass-card p-8 rounded-2xl card-hover border border-slate-700/50 group feature-icon-container">
+       <p class="feature-icon">🛡️</p>
+       <h4 class="text-2xl font-black mb-3 text-white group-hover:gradient-text transition">Garansi Resmi</h4>
+       <p class="text-slate-400 text-base font-semibold leading-relaxed">Semua produk original 100% dengan garansi resmi pabrik</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- ==================== CTA FINAL SECTION ULTIMATE ====================  -->
+   <section class="relative py-24 md:py-40 cta-section overflow-hidden">
+    <div class="relative max-w-5xl mx-auto px-4 text-center z-10 animate-slide-up">
+     <h3 class="text-5xl md:text-7xl font-black mb-8 text-white">🎁 Belanja Sekarang!</h3>
+     <p class="text-2xl md:text-3xl mb-12 text-white font-bold">Dapatkan semua keuntungan dengan satu klik</p>
+     <div class="flex gap-6 justify-center flex-wrap"><a id="ctaWaBig" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 px-12 py-6 bg-white text-green-600 font-black text-xl rounded-2xl hover:shadow-2xl transition transform hover:scale-110 active:scale-95"> <span class="text-4xl">💬</span> <span>Chat WhatsApp</span> </a> <a href="#products" class="inline-flex items-center gap-3 px-12 py-6 bg-white/20 border-3 border-white text-white font-black text-xl rounded-2xl hover:bg-white/30 transition transform hover:scale-110 active:scale-95"> <span class="text-4xl">📦</span> <span>Lihat Produk</span> </a>
+     </div>
+    </div>
+   </section><!-- ==================== FOOTER PREMIUM ====================  -->
+   <footer class="bg-slate-950 border-t border-slate-800/50 py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12"><!-- ABOUT -->
+      <div>
+       <div class="text-4xl font-black gradient-text mb-6">
+        MarketPro
+       </div>
+       <p id="storeDesc" class="text-slate-400 text-base leading-relaxed font-semibold">Marketplace terpercaya dengan 50+ produk original, harga kompetitif &amp; garansi resmi. Belanja dengan aman di MarketPro!</p>
+      </div><!-- CONTACT -->
+      <div>
+       <h4 class="font-black mb-6 text-white text-xl">📞 Hubungi Kami</h4>
+       <ul class="space-y-4 text-base text-slate-400 font-semibold">
+        <li id="footerWa">💬 WhatsApp</li>
+        <li id="footerPhone">📞 Telepon</li>
+        <li id="footerEmail">📧 Email</li>
+        <li class="text-green-400">⏰ Senin - Jumat: 09:00 - 18:00 WIB</li>
+       </ul>
+      </div><!-- SOCIAL MEDIA -->
+      <div>
+       <h4 class="font-black mb-6 text-white text-xl">🔗 Ikuti Kami</h4>
+       <div class="space-y-4"><a id="footerFb" href="#" target="_blank" rel="noopener noreferrer" class="block text-blue-400 hover:text-blue-300 transition font-bold text-base">📘 Facebook</a> <a id="footerIg" href="#" target="_blank" rel="noopener noreferrer" class="block text-pink-400 hover:text-pink-300 transition font-bold text-base">📷 Instagram</a> <a id="footerTt" href="#" target="_blank" rel="noopener noreferrer" class="block text-white hover:text-slate-300 transition font-bold text-base">🎵 TikTok</a>
+       </div>
+      </div><!-- PAYMENT -->
+      <div>
+       <h4 class="font-black mb-6 text-white text-xl">💳 Pembayaran</h4>
+       <div class="space-y-3 text-base text-slate-400 font-semibold">
+        <p>✓ Transfer Bank</p>
+        <p>✓ e-Wallet</p>
+        <p>✓ COD (Bayar di Tempat)</p>
+        <p>✓ Cicilan Kartu Kredit</p>
+       </div>
+      </div>
+     </div>
+     <div class="border-t border-slate-800 pt-8 text-center">
+      <p id="footerText" class="text-slate-500 text-base font-semibold">© 2024 MarketPro Indonesia - Marketplace Premium Original</p>
+      <p class="mt-4 text-slate-600 text-sm font-bold">🛡️ 100% Aman | ✓ Terjamin | 🔒 Terpercaya Sejak 2024</p>
+     </div>
+    </div>
+   </footer><!-- ==================== DEBUG CONSOLE ====================  -->
+   <div id="debugConsole" class="hidden fixed bottom-96 right-6 bg-slate-900/98 border-2 border-slate-700 rounded-2xl p-5 max-w-sm max-h-56 overflow-y-auto z-40 text-xs font-mono text-slate-300 shadow-2xl">
+    <div class="font-bold text-blue-400 mb-3 flex items-center justify-between">
+     📊 Debug Console <button onclick="toggleDebug()" class="text-slate-400 hover:text-white text-lg">✕</button>
+    </div>
+    <div id="debugLog" class="space-y-1.5"></div>
+   </div><!-- ==================== FLOATING ACTION BUTTONS ====================  --> <a id="floatWaBtn" href="#" target="_blank" rel="noopener noreferrer" class="fixed bottom-10 right-10 bg-gradient-to-br from-green-400 to-green-600 text-white p-6 rounded-full shadow-2xl hover:shadow-green-500/50 hover:scale-125 transition z-50 pulse-glow animate-float transform group">
+    <svg class="w-8 h-8 group-hover:animate-bounce" fill="currentColor" viewbox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg></a> <!-- ==================== TOAST NOTIFICATIONS ====================  -->
+   <div id="successToast" class="hidden fixed bottom-32 right-8 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-5 rounded-2xl shadow-2xl z-40 toast font-bold text-lg animate-slide-up flex items-center gap-3"><span>✅</span> <span id="successMsg">Berhasil!</span>
+   </div>
+   <div id="errorToast" class="hidden fixed bottom-32 right-8 bg-gradient-to-r from-red-500 to-red-600 text-white px-8 py-5 rounded-2xl shadow-2xl z-40 toast font-bold text-lg animate-slide-up flex items-center gap-3"><span>❌</span> <span id="errorMsg">Error!</span>
+   </div>
   </div>
-</header>
+  <script>
+    // ==================== CONFIGURATION ====================
+    const defaultProducts = [
+      // KENDARAAN - 10 PRODUK
+      { category: 'Kendaraan', name: 'Honda CB150R 2024', price: 23400000, originalPrice: 26000000, discount: 10, description: 'Motor sport 150cc dokumen resmi lengkap', quantity: 5, orders: 127, rating: 4.9, views: 3420 },
+      { category: 'Kendaraan', name: 'Yamaha Mio M3 125', price: 12780000, originalPrice: 14200000, discount: 10, description: 'Matic nyaman hemat konsumsi BBM', quantity: 8, orders: 234, rating: 4.8, views: 5120 },
+      { category: 'Kendaraan', name: 'Suzuki GSX-S150', price: 24300000, originalPrice: 27000000, discount: 10, description: 'Naked bike performa tinggi berkualitas', quantity: 6, orders: 98, rating: 4.7, views: 2890 },
+      { category: 'Kendaraan', name: 'Honda PCX 160', price: 19800000, originalPrice: 22000000, discount: 10, description: 'Matic premium teknologi terkini terbaik', quantity: 7, orders: 156, rating: 4.9, views: 4210 },
+      { category: 'Kendaraan', name: 'Yamaha Nmax 155', price: 21600000, originalPrice: 24000000, discount: 10, description: 'Matic maxi sporty efisien hemat', quantity: 9, orders: 203, rating: 4.8, views: 5670 },
+      { category: 'Kendaraan', name: 'Toyota Avanza 2023', price: 166500000, originalPrice: 185000000, discount: 10, description: 'MPV keluarga irit terawat sempurna', quantity: 3, orders: 89, rating: 4.7, views: 2340 },
+      { category: 'Kendaraan', name: 'Daihatsu Xenia 2023', price: 117000000, originalPrice: 130000000, discount: 10, description: 'MPV praktis keluarga terjangkau', quantity: 4, orders: 67, rating: 4.6, views: 1890 },
+      { category: 'Kendaraan', name: 'Honda CR-V 2022', price: 292500000, originalPrice: 325000000, discount: 10, description: 'SUV premium keluarga mewah berkelas', quantity: 2, orders: 45, rating: 4.9, views: 1560 },
+      { category: 'Kendaraan', name: 'Suzuki Ertiga 2023', price: 126000000, originalPrice: 140000000, discount: 10, description: 'MPV family teknologi canggih modern', quantity: 5, orders: 112, rating: 4.7, views: 3200 },
+      { category: 'Kendaraan', name: 'Toyota Rush 2023', price: 198000000, originalPrice: 220000000, discount: 10, description: 'SUV compact kokoh tangguh handal', quantity: 3, orders: 78, rating: 4.8, views: 2780 },
+      
+      // ELEKTRONIK - 18 PRODUK
+      { category: 'Elektronik', name: 'Samsung Galaxy A14 128GB', price: 2401000, originalPrice: 2890000, discount: 17, description: 'Smartphone 5G baterai lama tahan', quantity: 15, orders: 542, rating: 4.7, views: 8900 },
+      { category: 'Elektronik', name: 'Xiaomi Redmi Note 12', price: 1980000, originalPrice: 2400000, discount: 18, description: 'Smartphone gaming 120Hz performa', quantity: 18, orders: 634, rating: 4.8, views: 9870 },
+      { category: 'Elektronik', name: 'OPPO A16k 64GB', price: 1320000, originalPrice: 1650000, discount: 20, description: 'Smartphone budget handal terpercaya', quantity: 20, orders: 521, rating: 4.6, views: 7650 },
+      { category: 'Elektronik', name: 'Vivo Y15s 64GB', price: 1430000, originalPrice: 1890000, discount: 24, description: 'Smartphone baterai besar hemat', quantity: 17, orders: 478, rating: 4.5, views: 6780 },
+      { category: 'Elektronik', name: 'Realme C30 64GB', price: 1200000, originalPrice: 1500000, discount: 20, description: 'Smartphone entry terjangkau murah', quantity: 22, orders: 589, rating: 4.6, views: 8120 },
+      { category: 'Elektronik', name: 'Laptop ASUS VivoBook 14', price: 7225000, originalPrice: 8500000, discount: 15, description: 'Laptop tipis pekerjaan gaming bagus', quantity: 7, orders: 178, rating: 4.8, views: 3450 },
+      { category: 'Elektronik', name: 'Lenovo IdeaPad 3', price: 4200000, originalPrice: 5250000, discount: 20, description: 'Laptop budget kerja ringan praktis', quantity: 9, orders: 234, rating: 4.7, views: 4120 },
+      { category: 'Elektronik', name: 'HP Pavilion 15', price: 6750000, originalPrice: 7950000, discount: 15, description: 'Laptop performa menengah standar', quantity: 5, orders: 156, rating: 4.7, views: 2890 },
+      { category: 'Elektronik', name: 'Dell Inspiron 15', price: 4500000, originalPrice: 5625000, discount: 20, description: 'Laptop entry berkualitas bagus', quantity: 8, orders: 198, rating: 4.6, views: 3560 },
+      { category: 'Elektronik', name: 'TV LED LG 43 inch 4K', price: 3570000, originalPrice: 4200000, discount: 15, description: 'Smart TV gambar jernih HD 4K', quantity: 4, orders: 98, rating: 4.8, views: 1980 },
+      { category: 'Elektronik', name: 'Samsung 55 inch Smart TV', price: 5850000, originalPrice: 6500000, discount: 10, description: 'TV 4K AI upscaling canggih', quantity: 3, orders: 67, rating: 4.7, views: 1450 },
+      { category: 'Elektronik', name: 'TCL 32 inch LED TV', price: 1980000, originalPrice: 2475000, discount: 20, description: 'TV HD teknologi terbaru modern', quantity: 12, orders: 345, rating: 4.5, views: 5320 },
+      { category: 'Elektronik', name: 'Sony WH-CH720N', price: 1650000, originalPrice: 2200000, discount: 25, description: 'Headphone noise cancelling terbaik', quantity: 14, orders: 412, rating: 4.8, views: 6780 },
+      { category: 'Elektronik', name: 'JBL Flip 6 Speaker', price: 1980000, originalPrice: 2475000, discount: 20, description: 'Speaker portable waterproof kuat', quantity: 16, orders: 523, rating: 4.7, views: 7890 },
+      { category: 'Elektronik', name: 'Apple Watch Series 8', price: 4725000, originalPrice: 5250000, discount: 10, description: 'Smartwatch premium Apple canggih', quantity: 6, orders: 178, rating: 4.9, views: 3120 },
+      { category: 'Elektronik', name: 'iPad 10th Gen 64GB', price: 3960000, originalPrice: 4400000, discount: 10, description: 'Tablet 2in1 performa tinggi bagus', quantity: 5, orders: 134, rating: 4.8, views: 2340 },
+      
+      // FASHION - 16 PRODUK
+      { category: 'Fashion', name: 'Sepatu Nike Air Max 90', price: 1402500, originalPrice: 1650000, discount: 15, description: 'Sneaker original iconic klasik', quantity: 20, orders: 612, rating: 4.8, views: 9120 },
+      { category: 'Fashion', name: 'Adidas Ultraboost 22', price: 1350000, originalPrice: 1800000, discount: 25, description: 'Sepatu running premium berkualitas', quantity: 18, orders: 534, rating: 4.7, views: 8340 },
+      { category: 'Fashion', name: 'Puma RS-X Reinvention', price: 900000, originalPrice: 1200000, discount: 25, description: 'Sneaker casual trendy terkini', quantity: 22, orders: 678, rating: 4.6, views: 9560 },
+      { category: 'Fashion', name: 'Converse Chuck Taylor', price: 600000, originalPrice: 750000, discount: 20, description: 'Sepatu kasual klasik timeless', quantity: 25, orders: 845, rating: 4.7, views: 10230 },
+      { category: 'Fashion', name: 'New Balance 574', price: 1080000, originalPrice: 1350000, discount: 20, description: 'Sepatu lari nyaman fit bagus', quantity: 19, orders: 456, rating: 4.6, views: 7890 },
+      { category: 'Fashion', name: 'Kemeja Batik Premium', price: 412500, originalPrice: 485000, discount: 15, description: 'Batik tradisional ekslusif unik', quantity: 25, orders: 434, rating: 4.7, views: 5670 },
+      { category: 'Fashion', name: 'Kaos Pria Katun', price: 127500, originalPrice: 150000, discount: 15, description: 'Kaos berkualitas lembut nyaman', quantity: 40, orders: 923, rating: 4.5, views: 12340 },
+      { category: 'Fashion', name: 'Jaket Denim Original', price: 450000, originalPrice: 600000, discount: 25, description: 'Jaket denim klasik awet tahan', quantity: 15, orders: 289, rating: 4.6, views: 6120 },
+      { category: 'Fashion', name: 'Celana Cargo Pria', price: 300000, originalPrice: 400000, discount: 25, description: 'Celana praktis adventure outdoor', quantity: 18, orders: 401, rating: 4.5, views: 5430 },
+      { category: 'Fashion', name: 'Jaket Kulit Asli', price: 1020000, originalPrice: 1200000, discount: 15, description: 'Kulit asli tahan lama berkelas', quantity: 8, orders: 156, rating: 4.9, views: 2890 },
+      { category: 'Fashion', name: 'Jaket Bomber Pria', price: 375000, originalPrice: 500000, discount: 25, description: 'Jaket trendy urban modern keren', quantity: 12, orders: 267, rating: 4.6, views: 4560 },
+      { category: 'Fashion', name: 'Jaket Hiking', price: 525000, originalPrice: 700000, discount: 25, description: 'Jaket tahan cuaca ekstrem outdoor', quantity: 10, orders: 178, rating: 4.7, views: 3450 },
+      { category: 'Fashion', name: 'Jam Tangan Digital', price: 375000, originalPrice: 500000, discount: 25, description: 'Jam tangan sport modern digital', quantity: 20, orders: 567, rating: 4.5, views: 7890 },
+      { category: 'Fashion', name: 'Tas Ransel Laptop', price: 360000, originalPrice: 480000, discount: 25, description: 'Ransel anti air laptop travel', quantity: 18, orders: 423, rating: 4.6, views: 6780 },
+      { category: 'Fashion', name: 'Dompet Kulit Asli', price: 315000, originalPrice: 420000, discount: 25, description: 'Dompet kulit premium asli', quantity: 22, orders: 612, rating: 4.7, views: 8120 },
+      { category: 'Fashion', name: 'Kacamata Sunglasses', price: 450000, originalPrice: 600000, discount: 25, description: 'Kacamata premium UV400 stylish', quantity: 30, orders: 789, rating: 4.6, views: 9340 },
+      
+      // LOGAM MULIA - 9 PRODUK
+      { category: 'Logam Mulia', name: 'Emas Batangan 10g', price: 5822500, originalPrice: 6850000, discount: 15, description: 'Emas murni 99.9% sertifikat', quantity: 10, orders: 89, rating: 4.9, views: 3120 },
+      { category: 'Logam Mulia', name: 'Emas Batangan 5g', price: 2911250, originalPrice: 3425000, discount: 15, description: 'Emas batangan investasi aman', quantity: 15, orders: 134, rating: 4.8, views: 2340 },
+      { category: 'Logam Mulia', name: 'Emas Batangan 20g', price: 11645000, originalPrice: 13700000, discount: 15, description: 'Emas investasi besar menguntungkan', quantity: 5, orders: 56, rating: 4.9, views: 1780 },
+      { category: 'Logam Mulia', name: 'Emas Koin Kuntilanak', price: 17100000, originalPrice: 19000000, discount: 10, description: 'Koin emas investasi langka', quantity: 3, orders: 34, rating: 4.8, views: 890 },
+      { category: 'Logam Mulia', name: 'Perak Batangan 100g', price: 1800000, originalPrice: 2250000, discount: 20, description: 'Perak murni 99.9% sertifikat', quantity: 8, orders: 67, rating: 4.7, views: 1560 },
+      { category: 'Logam Mulia', name: 'Perak Batangan 50g', price: 900000, originalPrice: 1125000, discount: 20, description: 'Perak investasi jangka panjang', quantity: 12, orders: 98, rating: 4.6, views: 1340 },
+      { category: 'Logam Mulia', name: 'Gelang Emas 5g', price: 4275000, originalPrice: 5050000, discount: 15, description: 'Gelang emas modern elegan cantik', quantity: 7, orders: 45, rating: 4.8, views: 1120 },
+      { category: 'Logam Mulia', name: 'Kalung Emas 3g', price: 2565000, originalPrice: 3025000, discount: 15, description: 'Kalung emas minimalis sempurna', quantity: 9, orders: 78, rating: 4.7, views: 1890 },
+      { category: 'Logam Mulia', name: 'Cincin Emas Nikah', price: 5100000, originalPrice: 6000000, discount: 15, description: 'Cincin nikah emas 24k indah', quantity: 6, orders: 52, rating: 4.9, views: 2340 },
+      
+      // RUMAH TANGGA - 5 PRODUK
+      { category: 'Rumah Tangga', name: 'Mesin Cuci Samsung 7kg', price: 1800000, originalPrice: 2250000, discount: 20, description: 'Mesin cuci otomatis hemat energi', quantity: 5, orders: 89, rating: 4.7, views: 2120 },
+      { category: 'Rumah Tangga', name: 'Kulkas LG 2 Pintu', price: 3150000, originalPrice: 3750000, discount: 16, description: 'Kulkas hemat energi pendingin', quantity: 3, orders: 45, rating: 4.8, views: 1340 },
+      { category: 'Rumah Tangga', name: 'Rice Cooker Panasonic', price: 675000, originalPrice: 900000, discount: 25, description: 'Rice cooker lengkap multifungsi', quantity: 12, orders: 234, rating: 4.6, views: 3120 },
+      { category: 'Rumah Tangga', name: 'Kompor Gas 2 Tungku', price: 450000, originalPrice: 600000, discount: 25, description: 'Kompor gas stainless berkualitas', quantity: 15, orders: 378, rating: 4.5, views: 2890 },
+      { category: 'Rumah Tangga', name: 'Blender Maspion 2L', price: 337500, originalPrice: 450000, discount: 25, description: 'Blender powerful multifungsi bagus', quantity: 18, orders: 567, rating: 4.6, views: 3450 },
+      
+      // OLAHRAGA - 5 PRODUK
+      { category: 'Olahraga', name: 'Sepeda Gunung MTB', price: 1650000, originalPrice: 2200000, discount: 25, description: 'Sepeda MTB aluminum kokoh', quantity: 6, orders: 145, rating: 4.7, views: 2340 },
+      { category: 'Olahraga', name: 'Treadmill Electric', price: 2700000, originalPrice: 3375000, discount: 20, description: 'Treadmill fitness modern canggih', quantity: 4, orders: 67, rating: 4.8, views: 1120 },
+      { category: 'Olahraga', name: 'Dumbbell Set 20kg', price: 450000, originalPrice: 600000, discount: 25, description: 'Set dumbbell fitness lengkap', quantity: 10, orders: 234, rating: 4.6, views: 2890 },
+      { category: 'Olahraga', name: 'Tenda Camping 4 Org', price: 525000, originalPrice: 700000, discount: 25, description: 'Tenda outdoor berkualitas tinggi', quantity: 8, orders: 123, rating: 4.7, views: 1780 },
+      { category: 'Olahraga', name: 'Sleeping Bag Premium', price: 375000, originalPrice: 500000, discount: 25, description: 'Sleeping bag ekstrem nyaman', quantity: 14, orders: 289, rating: 4.6, views: 2120 }
+    ];
 
-<div class="container">
+    let allProducts = [];
+    let filteredCategory = 'Semua';
+    let isLoading = false;
+    let config = {
+      store_name: 'MarketPro',
+      store_motto: '🟢 Terpercaya Indonesia',
+      store_desc: 'Produk Original • Harga Kompetitif • Garansi Resmi',
+      wa_number: '6281234567890',
+      phone_number: '021-1234567',
+      email_address: 'info@marketpro.id',
+      fb_url: 'https://facebook.com',
+      ig_url: 'https://instagram.com',
+      tiktok_url: 'https://tiktok.com',
+      footer_text: '© 2024 MarketPro Indonesia - Marketplace Premium'
+    };
 
-  <div id="adminPanel">
-    <h3>Tambah Produk</h3>
-    <input type="text" id="nama" placeholder="Nama Produk">
-    <input type="number" id="harga" placeholder="Harga">
-    <button onclick="tambahProduk()">Simpan Produk</button>
-  </div>
+    // ==================== DEBUG SYSTEM ====================
+    function addDebugLog(msg) {
+      const log = document.getElementById('debugLog');
+      const timestamp = new Date().toLocaleTimeString('id-ID');
+      const entry = document.createElement('div');
+      entry.className = 'text-slate-300 hover:text-white transition';
+      entry.textContent = `[${timestamp}] ${msg}`;
+      log.appendChild(entry);
+      if (log.children.length > 20) log.removeChild(log.firstChild);
+      log.scrollTop = log.scrollHeight;
+    }
 
-  <h3>Produk</h3>
-  <div id="produkList"></div>
+    function toggleDebug() {
+      const console = document.getElementById('debugConsole');
+      console.classList.toggle('hidden');
+      if (!console.classList.contains('hidden')) addDebugLog('📊 Debug console opened');
+    }
 
-  <h3>Keranjang</h3>
-  <div id="cartList"></div>
-  <button class="green" onclick="checkoutWA()">Checkout WhatsApp</button>
+    function showSuccess(msg) {
+      const toast = document.getElementById('successToast');
+      document.getElementById('successMsg').textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3500);
+      addDebugLog(`✅ ${msg}`);
+    }
 
-</div>
+    function showError(msg) {
+      const toast = document.getElementById('errorToast');
+      document.getElementById('errorMsg').textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3500);
+      addDebugLog(`❌ ${msg}`);
+    }
 
-<script src="app.js"></script>
-</body>
+    // ==================== DATA SDK HANDLER ====================
+    const dataHandler = {
+      onDataChanged(data) {
+        try {
+          allProducts = data && Array.isArray(data) ? data : [];
+          addDebugLog(`📊 Data loaded: ${allProducts.length} products`);
+          
+          if (allProducts.length === 0) {
+            addDebugLog('🆕 Initializing default products...');
+            initializeDefaultProducts();
+          } else {
+            renderProducts();
+            updateStats();
+          }
+        } catch (err) {
+          showError(`Error: ${err.message}`);
+        }
+      }
+    };
+
+    async function initSDK() {
+      try {
+        addDebugLog('🚀 Initializing Data SDK...');
+        // Simulating SDK initialization since window.dataSdk isn't standard
+        // In a real environment, this would check for window.dataSdk
+        await new Promise(resolve => setTimeout(resolve, 500));
+        addDebugLog('✅ SDK initialized successfully');
+        return true;
+      } catch (err) {
+        addDebugLog(`⚠️ Critical Error: ${err.message}`);
+        return false;
+      }
+    }
+
+    // ==================== PRODUCT INITIALIZATION ====================
+    async function initializeDefaultProducts() {
+      try {
+        addDebugLog('📝 Adding 50+ default products...');
+        let successCount = 0;
+        isLoading = true;
+        
+        // Simulate adding products to the "database"
+        allProducts = [...defaultProducts];
+        successCount = defaultProducts.length;
+        
+        await new Promise(r => setTimeout(r, 800)); // Simulate network delay
+        
+        isLoading = false;
+        renderProducts();
+        updateStats();
+        showSuccess(`✅ ${successCount} produk berhasil ditambahkan!`);
+      } catch (err) {
+        isLoading = false;
+        showError(`Error: ${err.message}`);
+      }
+    }
+
+    // ==================== UI FUNCTIONS ====================
+    function updateAllLinks() {
+      try {
+        const phone = config.wa_number.replace(/\D/g, '');
+        const waUrl = `https://wa.me/${phone}`;
+        
+        document.getElementById('storeName').textContent = config.store_name;
+        document.getElementById('storeMotto').textContent = config.store_motto;
+        document.getElementById('storeDesc').textContent = config.store_desc;
+        document.getElementById('footerWa').textContent = `💬 ${config.wa_number}`;
+        document.getElementById('footerPhone').textContent = `📞 ${config.phone_number}`;
+        document.getElementById('footerEmail').textContent = `📧 ${config.email_address}`;
+        document.getElementById('footerText').textContent = config.footer_text;
+        
+        document.getElementById('waLink').href = waUrl;
+        document.getElementById('heroWaBtn').href = waUrl;
+        document.getElementById('ctaWaBig').href = waUrl;
+        document.getElementById('floatWaBtn').href = waUrl;
+        document.getElementById('footerFb').href = config.fb_url;
+        document.getElementById('footerIg').href = config.ig_url;
+        document.getElementById('footerTt').href = config.tiktok_url;
+        
+        addDebugLog(`🔗 Links updated`);
+      } catch (err) {
+        addDebugLog(`❌ Error: ${err.message}`);
+      }
+    }
+
+    function filterCategory(cat) {
+      filteredCategory = cat;
+      renderProducts();
+      addDebugLog(`🔍 Filter: ${cat}`);
+    }
+
+    function renderProducts() {
+      try {
+        const grid = document.getElementById('productsGrid');
+        const filtered = filteredCategory === 'Semua' ? allProducts : allProducts.filter(p => p.category === filteredCategory);
+
+        if (filtered.length === 0) {
+          grid.innerHTML = '<div class="col-span-full text-center py-20"><p class="text-slate-400 text-xl font-semibold">Tidak ada produk dalam kategori ini</p></div>';
+          return;
+        }
+
+        grid.innerHTML = filtered.map((p, idx) => {
+          const phone = config.wa_number.replace(/\D/g, '');
+          const waUrl = `https://wa.me/${phone}?text=Saya%20ingin%20pesan%20${encodeURIComponent(p.name)}%20-%20Rp${encodeURIComponent(parseInt(p.price).toLocaleString('id-ID'))}`;
+          const discount = p.discount_percent || 0;
+          const rating = p.rating || 4.5;
+          
+          return `
+            <div class="product-card glass-card border border-slate-700/50 rounded-2xl overflow-hidden card-hover h-full flex flex-col animate-slide-up group" style="animation-delay: ${(idx % 8) * 0.05}s;">
+              ${discount > 0 ? `<div class="discount-badge">-${discount}%</div>` : ''}
+              
+              <div class="w-full h-48 bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-7xl group-hover:scale-125 transition duration-300">
+                ${getCategoryEmoji(p.category)}
+              </div>
+              
+              <div class="p-6 flex-1 flex flex-col">
+                <h4 class="font-black text-base md:text-lg mb-2 text-white line-clamp-2 h-16 group-hover:gradient-text transition">${p.name}</h4>
+                <p class="text-slate-400 text-sm mb-4 line-clamp-2 flex-1 font-semibold">${p.description}</p>
+                
+                <div class="mb-5 space-y-2 pb-4 border-b border-slate-700/50">
+                  ${p.originalPrice ? `<p class="text-sm text-slate-500 font-bold line-through">Rp ${parseInt(p.originalPrice).toLocaleString('id-ID')}</p>` : ''}
+                  <p class="text-3xl font-black text-green-400 price-tag">Rp ${parseInt(p.price).toLocaleString('id-ID')}</p>
+                  <div class="flex justify-between text-xs text-slate-400 font-bold pt-2">
+                    <span>📦 ${p.quantity} stok</span>
+                    <span>⭐ ${rating} | ${p.orders} terjual</span>
+                  </div>
+                </div>
+                
+                <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="w-full px-4 py-3 gradient-btn text-white font-black rounded-xl transition text-base transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mt-auto shadow-lg">
+                  💬 Pesan Sekarang
+                </a>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        addDebugLog(`❌ Error rendering: ${err.message}`);
+      }
+    }
+
+    function updateStats() {
+      try {
+        const totalOrders = allProducts.reduce((sum, p) => sum + (p.orders || 0), 0);
+        const totalViews = allProducts.reduce((sum, p) => sum + (p.views || 0), 0);
+        document.getElementById('totalProductCount').textContent = allProducts.length + '+';
+        document.getElementById('totalOrders').textContent = (totalOrders / 1000).toFixed(1) + 'K+';
+      } catch (err) {
+        addDebugLog(`❌ Error: ${err.message}`);
+      }
+    }
+
+    function getCategoryEmoji(cat) {
+      const map = { 'Kendaraan': '🚗', 'Logam Mulia': '💎', 'Fashion': '👗', 'Elektronik': '📱', 'Rumah Tangga': '🏠', 'Olahraga': '⚽' };
+      return map[cat] || '📦';
+    }
+
+    // ==================== INITIALIZATION ====================
+    addDebugLog('🎯 MarketPro startup...');
+    
+    setTimeout(async () => {
+      try {
+        const sdkReady = await initSDK();
+        if (sdkReady) {
+          updateAllLinks();
+          initializeDefaultProducts(); // Load the 50+ products
+          showSuccess('✅ MarketPro siap digunakan!');
+          addDebugLog('✅ SISTEM BERJALAN SEMPURNA');
+        } else {
+          throw new Error('SDK initialization failed');
+        }
+      } catch (err) {
+        showError(`Error: ${err.message}`);
+      }
+    }, 600);
+
+    // ==================== DOWNLOAD FUNCTION ====================
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+      try {
+        addDebugLog('📥 Memulai download file...');
+        showSuccess('⏳ Sedang menyiapkan file...');
+        
+        const htmlContent = document.documentElement.outerHTML;
+        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `MarketPro-Premium-${new Date().getTime()}.html`;
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+          showSuccess('✅ File berhasil diunduh! Buka di browser untuk mulai');
+          addDebugLog('✅ Download selesai dengan sukses');
+        }, 500);
+      } catch (err) {
+        showError(`❌ Error download: ${err.message}`);
+        addDebugLog(`❌ Error: ${err.message}`);
+      }
+    });
+  </script>
+ </body>
 </html>
